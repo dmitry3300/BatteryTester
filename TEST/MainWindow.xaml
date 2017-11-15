@@ -1,0 +1,197 @@
+﻿<Controls:MetroWindow x:Class="TEST.MainWindow"
+        x:Name="_this"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d3="http://research.microsoft.com/DynamicDataDisplay/1.0"
+        xmlns:local="clr-namespace:TEST"
+        Title="Battery tester" Width="749" Closed="Window_Closed"  Icon="battery loading.ico" ResizeMode="CanMinimize" SizeToContent="Height">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- MahApps.Metro resource dictionaries. Make sure that all file names are Case Sensitive! -->
+                <!--
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                -->
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+                <!-- Accent and AppTheme setting -->
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <local:PwmConverter x:Key="MyPwmConverter"></local:PwmConverter>
+            <local:PwmHintConverter x:Key="MyPwmHintConverter"></local:PwmHintConverter>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid>
+        <TabControl>
+            <TabItem Header="Батареи">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="75" />
+                        </Grid.ColumnDefinitions>
+                        <!--
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <Label Content="{Binding Path=TempValue, Mode=OneWay}" ContentStringFormat="{}{0:0.0} °C"/>
+                    <Label Content="{Binding Path=RefValue, Mode=OneWay}" />
+                </StackPanel>
+                -->
+                        <Label  Name="linkLabel" FontSize="16" Grid.ColumnSpan="2" Grid.Column="0" BorderThickness="0" BorderBrush="Black" HorizontalAlignment="Center" >
+                            <Label.Style>
+                                <Style TargetType="Label">
+                                    <Setter Property="Content"  Value="Связь с блоком есть" />
+                                    <Setter Property="Foreground" Value="Green"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=LinkState,UpdateSourceTrigger=PropertyChanged}" Value="False">
+                                            <Setter Property="Foreground"  Value="Red" />
+                                            <Setter Property="Background" Value="Yellow" />
+                                            <Setter Property="Content"  Value="Связи с блоком нет!!!" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Label.Style>
+                        </Label>
+                        <ComboBox Name="comPortCombo" ItemsSource="{Binding PortNames}" SelectedValuePath="Key" DisplayMemberPath="Value" Grid.Column="2" SelectionChanged="comPortCombo_SelectionChanged" DropDownOpened="comPortCombo_DropDownOpened" SelectedIndex="0" BorderThickness="1,1,5,1">
+                        </ComboBox>
+                        <CheckBox Name="enableAudioCB" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="{Binding AudioEnable}" >Audio</CheckBox>
+                    </Grid>
+                    <GroupBox Header="Каналы">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="0.5*"/>
+                                <RowDefinition Height="8*"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0" Margin="20,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="1*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Content="Напр." Grid.Column="0" VerticalAlignment="Center"  />
+                                <Label Content="Тип АКБ" Grid.Column="1" VerticalAlignment="Center"  />
+                                <Label Content="Ёмкость" Grid.Column="2" VerticalAlignment="Center" />
+                                <Label Content="Время" Grid.Column="3" VerticalAlignment="Center"   />
+                                <Label Content="Режим" Grid.Column="4" VerticalAlignment="Center"   />
+                            </Grid>
+                            <ListView Name="channelsList" Grid.Row="1" ItemsSource="{Binding BatteryCannels}" SelectedItem="{Binding SelectedBattery}" HorizontalContentAlignment="Stretch" BorderThickness="1,0,1,1" BorderBrush="{x:Null}">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <GroupBox Header="{Binding Path=BatNameProp}" Name="infoGroupBox" Grid.Row="1" >
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="1*" />
+                                                    <ColumnDefinition Width="1*" />
+                                                    <ColumnDefinition Width="1*" />
+                                                    <ColumnDefinition Width="1*" />
+                                                    <ColumnDefinition Width="1*" />
+                                                    <ColumnDefinition Width="1*" />
+                                                    <ColumnDefinition Width="1*" />
+                                                    <ColumnDefinition Width="1*" />
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel Grid.Column="0">
+                                                    <Label Content="{Binding Path=voltageProp, Mode=OneWay}" ContentStringFormat="{}{0:0.0} V" Name="SLabel" />
+                                                    <ProgressBar Value="{Binding Path=PwmProp, Converter={StaticResource MyPwmConverter}, Mode=OneWay}" Maximum="255" LargeChange="0" Height="10" Foreground="#FF00FF2F" Minimum="0" ToolTip="{Binding Path=PwmProp, Converter={StaticResource MyPwmHintConverter}, Mode=OneWay}" ></ProgressBar>
+                                                </StackPanel>
+                                                <Label Content="{Binding Path=typePropText, Mode=OneWay}" Name="TLabel" Grid.Column="1"   />
+                                                <Label ContentStringFormat="{}{0:0.00} Ah" Name="CLabel" Grid.Column="2">
+                                                    <Label.Style>
+                                                        <Style TargetType="Label">
+                                                            <Style.Setters>
+                                                                <Setter Property="Content"  Value="{Binding Path=capacityProp, Mode=OneWay}" />
+                                                            </Style.Setters>
+                                                            <Style.Triggers>
+                                                                <DataTrigger  Binding="{Binding Path=modeProp,UpdateSourceTrigger=PropertyChanged}" Value="AUTO_CHARGE" >
+                                                                    <Setter Property="Content"  Value="---" />
+                                                                </DataTrigger>
+                                                                <DataTrigger  Binding="{Binding Path=modeProp,UpdateSourceTrigger=PropertyChanged}" Value="CHARGE" >
+                                                                    <Setter Property="Content"  Value="---" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Path=modeProp,UpdateSourceTrigger=PropertyChanged}" Value="READY">
+                                                                    <Setter Property="Background"  Value="Yellow" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Path=modeProp,UpdateSourceTrigger=PropertyChanged}" Value="AUTO_READY">
+                                                                    <Setter Property="Background"  Value="Yellow" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Label.Style>
+                                                </Label>
+                                                <Label Content="{Binding Path=timeProp, Mode=OneWay}" Name="VLabel" Grid.Column="3"  />
+                                                <Label Content="{Binding Path=modePropText, Mode=OneWay}" Name="mode" Grid.Column="4" >
+                                                    <Label.Style>
+                                                        <Style TargetType="Label">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Path=modeProp,UpdateSourceTrigger=PropertyChanged}" Value="AUTO_CHARGE">
+                                                                    <Setter Property="Background"  Value="#FFF1F18C" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Path=modeProp,UpdateSourceTrigger=PropertyChanged}" Value="CHARGE">
+                                                                    <Setter Property="Background"  Value="#FFF1F18C" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Path=modeProp,UpdateSourceTrigger=PropertyChanged}" Value="AUTO_DISCHARGE">
+                                                                    <Setter Property="Background"  Value="#FF89E289" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Path=modeProp,UpdateSourceTrigger=PropertyChanged}" Value="DISCHARGE">
+                                                                    <Setter Property="Background"  Value="#FF89E289" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Path=modeProp,UpdateSourceTrigger=PropertyChanged}" Value="AUTO_RECHARGE">
+                                                                    <Setter Property="Background"  Value="#FFF0A6F0" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Label.Style>
+                                                </Label>
+                                                <ComboBox Name="modeCombo" Grid.Column="5"  DataContext="{Binding ElementName=channelsList,Path=DataContext}"  ItemsSource="{Binding AvailableModes}" SelectedValuePath="Key" DisplayMemberPath="Value" SelectedIndex="1" VerticalContentAlignment="Center">
+                                                    <ComboBox.Style>
+                                                        <Style TargetType="ComboBox">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding ElementName=modeCombo,Path=SelectedValue}" Value="FULL_AUTO_STANDBY">
+                                                                    <Setter Property="ToolTip"  Value="Предварительный разряд акб перед тестом" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </ComboBox.Style>
+                                                </ComboBox>
+                                                <Button DataContext="{Binding ElementName=channelsList,Path=DataContext}" Command="{Binding Path=ChangeModeCommand}" CommandParameter="{Binding ElementName=modeCombo,Path=SelectedValue}" Grid.Column="6">Set</Button>
+                                                <Button DataContext="{Binding ElementName=channelsList,Path=DataContext}" Command="{Binding Path=ChangeModeCommand}" Grid.Column="7" Background="Red" CommandParameter="{x:Static local:Channel_ModeState.READY}">STOP</Button>
+                                            </Grid>
+                                        </GroupBox>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                                <ListView.Resources>
+                                    <Style TargetType="ListViewItem">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                                <Setter Property="IsSelected" Value="True"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ListView.Resources>
+
+                            </ListView>
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Header="LOG" Height="200" VerticalAlignment="Bottom" BorderThickness="1,1,0,1" Margin="0,0,0,20" >
+                        <ListView Name="LogList" ItemsSource="{Binding Log}" VerticalContentAlignment="Bottom" ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="False" Margin="0,0,0,20"/>
+                    </GroupBox>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Graf" Visibility="Hidden" >
+                <!--d3:ChartPlotter Name="plotter" Height="700">
+                    <d3:ChartPlotter.HorizontalAxis>
+                        <d3:HorizontalDateTimeAxis Name="dateAxis" />
+                    </d3:ChartPlotter.HorizontalAxis>
+                </-->
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Controls:MetroWindow>
