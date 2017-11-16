@@ -128,6 +128,19 @@ namespace TEST
             return null;
         }
     }
+    public class CapacityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            return (float)value*1.15;
+        }
+        public object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
     public enum Channel_ModeState
     {
         STANDBY = 0, AUTO_STANDBY, AUTO_CHARGE, AUTO_DISCHARGE, AUTO_RECHARGE, AUTO_READY, CHARGE, DISCHARGE, READY, FULL_AUTO_STANDBY, FULL_AUTO_DISCHARGE, FAST_AUTO_STANDBY, FAST_AUTO_CHARGE

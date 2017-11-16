@@ -21,6 +21,7 @@
             </ResourceDictionary.MergedDictionaries>
             <local:PwmConverter x:Key="MyPwmConverter"></local:PwmConverter>
             <local:PwmHintConverter x:Key="MyPwmHintConverter"></local:PwmHintConverter>
+            <local:CapacityConverter x:Key="MyCapacityConverter"></local:CapacityConverter>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -107,7 +108,7 @@
                                                     <Label.Style>
                                                         <Style TargetType="Label">
                                                             <Style.Setters>
-                                                                <Setter Property="Content"  Value="{Binding Path=capacityProp, Mode=OneWay}" />
+                                                                <Setter Property="Content"  Value="{Binding Path=capacityProp,Converter={StaticResource MyCapacityConverter}, Mode=OneWay}" />
                                                             </Style.Setters>
                                                             <Style.Triggers>
                                                                 <DataTrigger  Binding="{Binding Path=modeProp,UpdateSourceTrigger=PropertyChanged}" Value="AUTO_CHARGE" >

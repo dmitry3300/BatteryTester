@@ -63,4 +63,3 @@ D:\Dmitry3300\BatteryTester\C#\TestApplication\TEST\obj\x86\Release\GeneratedInt
 D:\Dmitry3300\BatteryTester\C#\TestApplication\TEST\bin\Release\MahApps.Metro.dll
 D:\Dmitry3300\BatteryTester\C#\TestApplication\TEST\bin\Release\MahApps.Metro.pdb
 D:\Dmitry3300\BatteryTester\C#\TestApplication\TEST\bin\Release\MahApps.Metro.xml
-D:\Dmitry3300\BatteryTester\C#\TestApplication\TEST\obj\x86\Release\TEST.csprojResolveAssemblyReference.cache

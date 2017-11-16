@@ -63,4 +63,3 @@ D:\Dmitry3300\BatteryTester\C#\TestApplication\TEST\obj\x86\Debug\TEST.pdb
 D:\Dmitry3300\BatteryTester\C#\TestApplication\TEST\obj\x86\Debug\GeneratedInternalTypeHelper.g.cs
 D:\Dmitry3300\BatteryTester\C#\TestApplication\TEST\bin\Debug\MahApps.Metro.pdb
 D:\Dmitry3300\BatteryTester\C#\TestApplication\TEST\bin\Debug\MahApps.Metro.xml
-D:\Dmitry3300\BatteryTester\C#\TestApplication\TEST\obj\x86\Debug\TEST.csprojResolveAssemblyReference.cache
